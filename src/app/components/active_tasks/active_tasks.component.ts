@@ -17,7 +17,8 @@ export class ActiveTasks {
 
     GetActiveTasks(){
       
-        this.couch.get('_active_tasks', (result) => { this._active_tasks = result })
+        let GET = this.couch.get('_active_tasks');
+        GET.then((result) => { this._active_tasks = result })
         
     }
 }

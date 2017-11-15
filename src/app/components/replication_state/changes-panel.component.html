@@ -1,0 +1,24 @@
+    <p-panel class="col-xs-12" [toggleable]="true">
+        <p-header>
+            <button pButton type="button" icon="fa-refresh" (click)="GetChanges(from_db, to_db)"> </button>
+            <p-inputSwitch onLabel="Docs" offLabel="Meta" [(ngModel)]="include_docs"> </p-inputSwitch>
+                Changes for [{{from_db}}] -> [{{to_db}}]
+        </p-header>
+        <div class='row col' *ngIf='_changes != null'>
+            <button class='col-xs-1' (click)='TriggerReplication(from_db, to_db)' [disabled]="_changes.results.length==0" pButton type="button"
+                icon="fa-compress"> </button>
+                <mat-progress-bar *ngIf="replication_requested" mode="query"></mat-progress-bar>
+                
+            <div class='col-xs-10'>
+                <ul class='col-xs-12' *ngIf="_changes.results.length>0" style='border-left:1px white solid;'>
+
+                    <li *ngFor="let item of _changes.results">{{item.id }}</li>
+                </ul>
+                <ul class='col-xs-12' *ngIf="_changes.results.length==0" style='border-left:1px white solid;'>
+
+                    <li>No Changes Detected
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </p-panel>

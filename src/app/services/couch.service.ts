@@ -1,20 +1,16 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class CouchService {
     host: string;
     constructor(private http: HttpClient) {
-        this.host = "host";
-    }
-    get(url: string, callback: Function) {
-        return this.http.get(this.host + url).subscribe(data => {
-            callback(data);
-        });
+        this.host = environment.db_host;
     }
 
-    get_promise(url: string) {
+    get(url: string){
         return new Promise((resolve, reject) => {
             this.http.get(this.host + url).subscribe(data => {
                 resolve(data);

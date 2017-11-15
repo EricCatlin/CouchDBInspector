@@ -1,38 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CouchService } from '../../services/couch.service';
-
+import { ChangesPanel } from './changes-panel.component';
 @Component({
     selector: 'replication-state',
     templateUrl: './replication_state.component.html'
 })
 
-export class ReplicationState {
-    to_current: any;
-    from_current: any;
-
-    _changes;
-
+export class ReplicationState implements AfterViewInit{
+    ngAfterViewInit(): void {
+    }
+    @ViewChild(ChangesPanel) child;
 
     from: DB;
     to: DB;
     
-    include_docs: boolean;
-
-
-
     from_db: string;
     to_db: string;
-
-
-    from_latest: Object;
-    to_latest: Object;
-
-
 
     constructor(private couch: CouchService) {
         this.from = new DB();
         this.to = new DB();
-        this.include_docs=false;
         this.GetAllDBs();
         
         this.from_db = "replication_tests";
@@ -42,7 +29,7 @@ export class ReplicationState {
 
 
     GetAllDBs(){
-        let GET = this.couch.get_promise('_all_dbs');
+        let GET = this.couch.get('_all_dbs');
         GET.then((result: any) => {
             this.from.tables = result.map(item=>new Table(item));
             this.to.tables = result.map(item=>new Table(item));
@@ -51,7 +38,7 @@ export class ReplicationState {
     }
 
     GetFromDB(){
-        let GET = this.couch.get_promise('_all_dbs');
+        let GET = this.couch.get('_all_dbs');
         GET.then((result: any) => {
             this.from.tables = result.map(item=>new Table(item));
         });
@@ -59,7 +46,7 @@ export class ReplicationState {
     }
 
     GetToDB(){
-        let GET = this.couch.get_promise('_all_dbs');
+        let GET = this.couch.get('_all_dbs');
         GET.then((result: any) => {
             this.to.tables = result.map(item=>new Table(item));
         });
@@ -69,48 +56,44 @@ export class ReplicationState {
 
     SelectFromDB() {
         const db = this.from_db;
-        this.from_current = null;
-        this.couch.get(db, (result) => { this.from_current = result;})
-        this._changes = null;
+        this.child.from_data = null;
+        let GET = this.couch.get(db);
+        GET.then(result => { this.child.from_data = result;
+        this.child.GetChanges()})
+        GET.catch(error=>console.log(error));
+        
     }
 
 
     SelectToDB() {
         const db = this.to_db;
-        this.to_current = null;
-        this.couch.get(db, (result) => { this.to_current = result;})
-        this._changes = null;
+        this.child.to_data = null;
+        let GET = this.couch.get(db);
+        GET.then(result => { this.child.to_data = result; this.child.GetChanges()})
+        GET.catch(error=>console.log(error)); 
     }
 
     RefreshReplicationData(from_db: string, to_db: string) {
         let data = {};
-        this.couch.get(from_db, (result) => { this.from_current = result; this.Helper();})
-        this.couch.get(to_db, (result) => { this.to_current = result; this.Helper(); })
-        this._changes = null;
+        let GETFROM = this.couch.get(from_db);
+        GETFROM.then(result => { this.child.from_data = result; this.Helper();})
+        let GETTO = this.couch.get(to_db);
+        GETTO.then(result => { this.child.to_data = result; this.Helper(); })
+        GETFROM.catch(error=>console.log(error));
+        GETTO.catch(error=>console.log(error));
 
     }
     Helper(){
-        if(this.from_current && this.to_current) this.GetChanges(this.from_db,this.to_db);
+       
     }
 
-    GetChanges(from_db: string, to_db: string) {
-        this.couch.get(from_db + '/_changes?include_docs='+this.include_docs+'&since=' + this.to_current.update_seq, from_res => {
-            from_res.results = from_res.results.sort((a, b) => { return a.changes[0].rev - b.changes[0].rev })
-            from_res.doc_index = {};
-            this._changes = from_res;
-
-
-        })
-    }
-    TriggerReplication(from_db: string, to_db: string) {
-        this.couch.replicate("_replicate", { source: this.from_db, target: this.to_db }, (result) => { this.GetChanges(from_db,to_db); })
-    }
+    
+    
 }
 
 
 export class DB {
     tables;
-
 }
 
 export class Table {

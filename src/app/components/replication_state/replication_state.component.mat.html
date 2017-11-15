@@ -1,0 +1,71 @@
+<mat-expansion-panel [expanded]='true' class='col-xs-6'>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Replication
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <button pButton type="button" icon="fa-refresh" (click)="GetAllDBs()"></button>
+    <div class='row'>
+
+
+
+        <mat-expansion-panel *ngIf="from.tables">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    FROM
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <button pButton type="button" icon="fa-refresh" (click)="SelectFromDB();"></button>
+            <div class='row'>
+                <div class='col-xs-12'>
+                    <p-dropdown [options]="from.tables" (onChange)="SelectFromDB()" [(ngModel)]="from_db"></p-dropdown>
+                </div>
+                <div class='col-xs-12' *ngIf="from_data">
+                    <div class='col-xs-3 '>Update Sequence </div>
+                    <div class='col-xs-8 ' style='overflow-x:auto'>{{from_data.update_seq}}</div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-card class=" bg-red-500">
+            <mat-card-header>
+
+
+                <mat-card-title> Hello</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                World
+            </mat-card-content>
+
+        </mat-card>
+        <mat-card class="col-xs-6 bg-green-500">
+            <mat-card-header>
+
+                <button pButton type="button" icon="fa-refresh" (click)="SelectToDB();"></button>
+                <mat-card-title> To</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class='row'>
+                        <select  (change)="SelectToDB(table)" [(ngModel)]="to_db">
+                                <option *ngFor="let table of from.tables" [value]="table.value">
+                                    {{table.value}}
+                                </option>
+                            </select>
+                    <p-dropdown class='col-xs-12' [options]="from.tables" (onChange)="SelectToDB()" [(ngModel)]="to_db"></p-dropdown>
+                    <div class='col-xs-12' *ngIf="to_data">
+                        <div class='col-xs-3 '>Update Sequence </div>
+                        <div class='col-xs-8 ' style='overflow-x:auto'>{{to_data.update_seq}}</div>
+                    </div>
+                </div>
+            </mat-card-content>
+
+        </mat-card>
+        <changes-panel [to_db]="to_db" [from_db]="from_db"></changes-panel>
+
+
+
+
+    </div>
+
+
+</mat-expansion-panel>

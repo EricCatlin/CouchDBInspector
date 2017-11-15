@@ -4,10 +4,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
 import { HttpClientModule } from '@angular/common/http';
 import { JsonPipe } from '@angular/common';
-import { ClockService} from './services/clock.service';
-import { CouchService} from './services/couch.service';
+import { ClockService } from './services/clock.service';
+import { CouchService } from './services/couch.service';
 
-import { KeysPipe, OrderByPipe} from './services/pipes';
+import { KeysPipe, OrderByPipe } from './services/pipes';
 
 
 import { AppComponent } from './app.component';
@@ -17,6 +17,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ActiveTasks } from './components/active_tasks/active_tasks.component';
 import { ReplicationState } from './components/replication_state/replication_state.component';
+import { ChangesPanel } from './components/replication_state/changes-panel.component';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -27,12 +28,19 @@ import { ButtonModule } from 'primeng/primeng';
 import { ToolbarModule } from 'primeng/primeng';
 import { ChartModule } from 'primeng/primeng';
 import { PanelModule } from 'primeng/primeng';
-import {ProgressBarModule} from 'primeng/primeng';
-import {TabViewModule} from 'primeng/primeng';
-import {DropdownModule} from 'primeng/primeng';
-import {InputSwitchModule} from 'primeng/primeng';
+import { ProgressBarModule } from 'primeng/primeng';
+import { TabViewModule } from 'primeng/primeng';
+import { DropdownModule } from 'primeng/primeng';
+import { InputSwitchModule } from 'primeng/primeng';
 
 
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatExpansionModule,
+  MatCardModule,
+  MatProgressBarModule
+} from '@angular/material';
 
 
 @NgModule({
@@ -42,7 +50,8 @@ import {InputSwitchModule} from 'primeng/primeng';
     KeysPipe,
     OrderByPipe,
     ActiveTasks,
-    ReplicationState
+    ReplicationState,
+    ChangesPanel
   ],
   imports: [
     BrowserModule,
@@ -57,11 +66,14 @@ import {InputSwitchModule} from 'primeng/primeng';
     ProgressBarModule,
     TabViewModule,
     DropdownModule,
-    InputSwitchModule
-    
-    
+    InputSwitchModule,
+
+    MatButtonModule, MatCheckboxModule,
+    MatExpansionModule,MatCardModule,MatProgressBarModule
+
+
   ],
-  providers: [ClockService,CouchService],
+  providers: [ClockService, CouchService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
